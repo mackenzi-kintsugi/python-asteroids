@@ -46,6 +46,13 @@ def main():
         # Update game state
         updatable.update(dt)
         
+        # Collision detection check
+        for asteroid in asteroids:
+            if player.collision_check(asteroid):
+                print("Game Over!")
+                import sys
+                sys.exit()
+        
         screen.fill((0, 0, 0))     
         # render/draw everything, before flip
         drawable.draw(screen)
