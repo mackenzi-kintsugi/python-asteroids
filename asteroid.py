@@ -5,7 +5,7 @@ you may eventually want to implement self.rect and update it based on self.posit
 
 import pygame
 #from pygame.sprite import Sprite
-#from constants import 
+from constants import SCREEN_WIDTH, SCREEN_HEIGHT
 from circleshape import CircleShape
 
 
@@ -28,6 +28,11 @@ class Asteroid(CircleShape):
         
         # Update angle
         self.angle += 1  # Rotate each frame, adjust speed as needed
+        
+        # Kill when leaving screen
+        if (self.rect.x < 0 or self.rect.x > SCREEN_WIDTH or
+                self.rect.y < 0 or self.rect.y > SCREEN_HEIGHT):
+            self.kill()
 
     def draw(self, screen):
         # Rotate the image and update rect (not yet)
@@ -36,7 +41,7 @@ class Asteroid(CircleShape):
         
         # Draw the rotated image
         screen.blit(self.image, self.rect.topleft)
-
+    
 ''' # old version
 class Asteroid(CircleShape):
     def __init__(self, x, y, radius):

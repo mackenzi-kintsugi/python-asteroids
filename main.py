@@ -5,7 +5,7 @@
 # throughout this file
 import pygame
 from constants import *
-from player import Player  # Add Player import
+from player import Player, Shot  # Add Player import
 from asteroid import Asteroid
 from asteroidfield import AsteroidField
 
@@ -19,9 +19,12 @@ def main():
     updatable = pygame.sprite.Group()
     drawable = pygame.sprite.Group()
     asteroids = pygame.sprite.Group()
+    shots = pygame.sprite.Group()
     
     # Add the Player & Asteroid class to their needed groups
     Player.containers = (updatable, drawable)
+    Shot.containers = (updatable, drawable, shots)
+    
     Asteroid.containers = (asteroids, updatable, drawable)
     AsteroidField.containers = (updatable) # Ensure tuple
     
@@ -46,12 +49,27 @@ def main():
         # Update game state
         updatable.update(dt)
         
+        # Shots fired!
+        for sprite in updatable:
+            result = sprite.update(dt)
+            if isinstance(result, Shot):  # If a shot was created
+                shots.add(result)  # Add it to the shots group        
+        
         # Collision detection check
         for asteroid in asteroids:
             if player.collision_check(asteroid):
                 print("Game Over!")
-                import sys
-                sys.exit()
+                #import sys
+                #sys.exit()
+        
+        for shot in shots:
+            collided_asteroids = pygame.sprite.spritecollide(shot, asteroids, True)
+            
+            # If I wish to make piercing rounds, get rid of below
+            for asteroid in collided_asteroids:
+                shot.kill()  # Assuming the shot should be removed after collision
+                # You may handle other reactions, like playing sounds or updating scores here
+ 
         
         screen.fill((0, 0, 0))     
         # render/draw everything, before flip
