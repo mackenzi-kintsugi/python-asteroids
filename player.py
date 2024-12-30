@@ -1,7 +1,8 @@
 import pygame
 from pygame.sprite import Sprite
-from constants import SCREEN_WIDTH, SCREEN_HEIGHT, PLAYER_RADIUS, PLAYER_TURN_SPEED, PLAYER_SPEED, SHOT_RADIUS,PLAYER_SHOOT_SPEED, PLAYER_SHOOT_COOLDOWN 
+from constants import SCREEN_WIDTH, SCREEN_HEIGHT, PLAYER_RADIUS, PLAYER_TURN_SPEED, PLAYER_SPEED, SHOT_RADIUS, PLAYER_SHOOT_SPEED, PLAYER_SHOOT_COOLDOWN 
 from circleshape import CircleShape
+from bullet import Shot
 
 class Player(CircleShape, Sprite):
     
@@ -41,7 +42,10 @@ class Player(CircleShape, Sprite):
         # Kill when leaving screen
         if (self.rect.x < 0 or self.rect.x > SCREEN_WIDTH or
                 self.rect.y < 0 or self.rect.y > SCREEN_HEIGHT):
-            self.kill()        
+            #self.kill()        
+            print("Out of Bounds!")
+            #import sys
+            #sys.exit()
         
         # Key configurations
         keys = pygame.key.get_pressed()
@@ -96,6 +100,7 @@ class Player(CircleShape, Sprite):
         # Create new shot at player's position
         return Shot(self.position.x, self.position.y, SHOT_RADIUS, velocity)
 
+'''
 class Shot(CircleShape):
     def __init__(self, x, y, radius, velocity):
         super().__init__(x, y, radius)
@@ -124,3 +129,4 @@ class Shot(CircleShape):
         
         # Draw the rotated image
         screen.blit(self.image, self.rect.topleft)
+'''

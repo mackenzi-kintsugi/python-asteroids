@@ -30,9 +30,13 @@ class Asteroid(CircleShape):
         self.angle += 1  # Rotate each frame, adjust speed as needed
         
         # Kill when leaving screen
-        if (self.rect.x < 0 or self.rect.x > SCREEN_WIDTH or
-                self.rect.y < 0 or self.rect.y > SCREEN_HEIGHT):
+        # Right to left, remove if past left screen edge
+        if self.rect.right < 0:
             self.kill()
+        # Left to right, remove if past right screen edge
+        if self.rect.left > SCREEN_WIDTH:
+            self.kill()
+
 
     def draw(self, screen):
         # Rotate the image and update rect (not yet)
