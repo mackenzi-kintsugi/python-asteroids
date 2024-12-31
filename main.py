@@ -69,6 +69,10 @@ def main():
             for asteroid in collided_asteroids:
                 shot.kill()  # Assuming the shot should be removed after collision
                 # You may handle other reactions, like playing sounds or updating scores here
+                
+                new_asteroids = asteroid.split()  # Get the new asteroids from split
+                if new_asteroids:  # If any new asteroids were created
+                    asteroids.add(new_asteroids)  # Add them to the asteroids group
  
         
         screen.fill((0, 0, 0))     

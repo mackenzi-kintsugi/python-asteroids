@@ -4,14 +4,18 @@ you may eventually want to implement self.rect and update it based on self.posit
 '''
 
 import pygame
+import random
 #from pygame.sprite import Sprite
 from constants import SCREEN_WIDTH, SCREEN_HEIGHT
 from circleshape import CircleShape
+from constants import ASTEROID_MIN_RADIUS
 
 
 class Asteroid(CircleShape):
-    def __init__(self, x, y, radius):
-        super().__init__(x, y, radius)
+    def __init__(self, position, radius, velocity):
+        x, y = position.x, position.y
+        super().__init__(x, y, radius) # Now you can use x and y as intended
+        self.velocity = velocity
         
         # Image and angle initialization
         self.original_image = pygame.Surface((radius * 2, radius * 2), pygame.SRCALPHA)
@@ -45,24 +49,45 @@ class Asteroid(CircleShape):
         
         # Draw the rotated image
         screen.blit(self.image, self.rect.topleft)
-    
-''' # old version
-class Asteroid(CircleShape):
-    def __init__(self, x, y, radius):
-        super().__init__(x, y, radius)
-   
-        # Define diameter and setup image
-        diameter = radius * 2
-        self.image = pygame.Surface((diameter, diameter), pygame.SRCALPHA) # Create a surface for the sprite
-     
-
+         
         
-    def draw(self, screen): # Draw the asteroid. Position and size are key here.
-        pygame.draw.circle(screen, "white", (self.position.x, self.position.y), self.radius, 2)
-        # If later in development you want to manage sprite boundaries or other spatial operations using the Rect,
-        # consider doing something with the returned value from draw.
+    def split(self):
+        self.kill()
+        if self.radius <= ASTEROID_MIN_RADIUS:
+            return []
+
+        random_angle = random.uniform(20, 50)
+        new_radius = self.radius - ASTEROID_MIN_RADIUS
+
+        # Convert the position to Vector2
+        position = pygame.Vector2(self.rect.center)
+
+        # Create new velocities
+        velocity1 = self.velocity.rotate(random_angle)
+        velocity2 = self.velocity.rotate(-random_angle)
+
+        # Create new asteroids with Vector2 position
+        new_asteroid1 = Asteroid(position=position, radius=new_radius, velocity=velocity1 * 1.2)
+        new_asteroid2 = Asteroid(position=position, radius=new_radius, velocity=velocity2 * 1.2)
+
+        return [new_asteroid1, new_asteroid2]
     
-    def update(self, dt):
-        # Update position using the velocity and delta time
-        self.position += self.velocity * dt
-'''
+        '''
+        # Solution (but still causes crash due to incompatibility with my other files)
+        self.kill()
+
+        if self.radius <= ASTEROID_MIN_RADIUS:
+            return
+
+        # randomize the angle of the split
+        random_angle = random.uniform(20, 50)
+
+        a = self.velocity.rotate(random_angle)
+        b = self.velocity.rotate(-random_angle)
+
+        new_radius = self.radius - ASTEROID_MIN_RADIUS
+        asteroid = Asteroid(self.position.x, self.position.y, new_radius)
+        asteroid.velocity = a * 1.2
+        asteroid = Asteroid(self.position.x, self.position.y, new_radius)
+        asteroid.velocity = b * 1.2
+        '''
